@@ -1,6 +1,18 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QMessageBox, QPushButton, QVBoxLayout, QLabel, QFileDialog, QDialog, QDialogButtonBox, QTextEdit
+from PyQt6.QtWidgets import (
+    QApplication,
+    QWidget,
+    QMessageBox,
+    QPushButton,
+    QVBoxLayout,
+    QLabel,
+    QFileDialog,
+    QDialog,
+    QDialogButtonBox,
+    QTextEdit,
+)
 import json
+
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -31,16 +43,24 @@ class MainWindow(QWidget):
         self.following_data = None
 
     def choose_followers_json(self):
-        filenames, _ = QFileDialog.getOpenFileName(self, "Choose Followers JSON", "", "JSON files (*.json)")
+        filenames, _ = QFileDialog.getOpenFileName(
+            self, "Choose Followers JSON", "", "JSON files (*.json)"
+        )
         if filenames:
             self.followers_data = read_json(filenames)
-            self.label_selected_followers.setText(f"Selected Followers JSON: {filenames}")
+            self.label_selected_followers.setText(
+                f"Selected Followers JSON: {filenames}"
+            )
 
     def choose_following_json(self):
-        filenames, _ = QFileDialog.getOpenFileName(self, "Choose Following JSON", "", "JSON files (*.json)")
+        filenames, _ = QFileDialog.getOpenFileName(
+            self, "Choose Following JSON", "", "JSON files (*.json)"
+        )
         if filenames:
             self.following_data = read_json(filenames)
-            self.label_selected_following.setText(f"Selected Following JSON: {filenames}")
+            self.label_selected_following.setText(
+                f"Selected Following JSON: {filenames}"
+            )
 
     def calculate_difference(self):
         if self.followers_data and self.following_data:
@@ -81,25 +101,28 @@ class DifferenceWindow(QDialog):
 
 
 def read_json(file):
-    with open(file, 'r') as f:
+    with open(file, "r") as f:
         data = json.load(f)
     return data
 
+
 def extract_following(json_data):
     names = set()
-    for relationship in json_data.get('relationships_following', []):
-        name = relationship['string_list_data'][0]['value']
+    for relationship in json_data.get("relationships_following", []):
+        name = relationship["string_list_data"][0]["value"]
         if name:
             names.add(name)
     return names
+
 
 def extract_followers(json_data):
     names = set()
     for follower in json_data:
-        name = follower['string_list_data'][0]['value']
+        name = follower["string_list_data"][0]["value"]
         if name:
             names.add(name)
     return names
+
 
 def difference(json1, json2):
     set1 = extract_followers(json1)

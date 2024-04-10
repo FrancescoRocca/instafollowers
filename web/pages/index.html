@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>InstaFollowers</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#calculate-button').click(function () {
+                var followersFile = $('#followers-file')[0].files[0];
+                var followingFile = $('#following-file')[0].files[0];
+
+                if (followersFile && followingFile) {
+                    var formData = new FormData();
+                    formData.append('followers_json', followersFile);
+                    formData.append('following_json', followingFile);
+
+                    $.ajax({
+                        url: '/calculate_difference',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            var diff = response.diff;
+                            var numNames = response.num_names;
+                            var resultHtml = '<h3>Difference Result (' + numNames + ' names)</h3>';
+                            resultHtml += '<p>Names in Following but not in Followers:</p>';
+                            resultHtml += '<ul>';
+                            for (var i = 0; i < diff.length; i++) {
+                                resultHtml += '<li>' + diff[i] + '</li>';
+                            }
+                            resultHtml += '</ul>';
+                            $('#result').html(resultHtml);
+                        }
+                    });
+                } else {
+                    alert('Please select both followers and following JSON files.');
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <h1>InstaFollowers</h1>
+    <label for="followers-file">Choose Followers JSON</label>
+    <br>
+    <input type="file" id="followers-file" accept=".json">
+    <br>
+    <label for="following-file">Choose Following JSON</label>
+    <br>
+    <input type="file" id="following-file" accept=".json">
+    <br>
+    <br>
+    <button id="calculate-button">Calculate Difference</button>
+    <div id="result"></div>
+</body>
+
+</html>
