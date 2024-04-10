@@ -9,13 +9,13 @@ You have to get some json files from Instagram, go to "Account centre", then "Yo
 - Install PyQt6:
 > pip install pyqt6
 - Run the app:
-> python3 app.py
+> python3 gui/app.py
 
 ### Web GUI Version (not for production)
 - Install Flask:
 > pip install flask
 - Enter the web folder and run:
-> flask run
+> cd web && flask run
 
 ## Roadmap
 - Make a production ready web app
