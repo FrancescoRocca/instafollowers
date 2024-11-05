@@ -1,23 +1,37 @@
-# InstaFollowers
-Find out who doesn't follow you anymore on Instagram with this simple tool.
+# InstaFollowers 📉
 
-## Requirements
-You have to get some json files from Instagram, go to "Account centre", then "Your information", "Download your information", then "Some of your information" and choose "Followers and following" in JSON format.
+**InstaFollowers** is a simple and effective tool that helps you track your followers.
 
-## How to use
-### GUI Version (recommended)
-- Install PyQt6:
-> pip install pyqt6
-- Run the app:
-> python3 gui/app.py
+## 🎯 Features
+- User-friendly interface to check your follower status.
+- Easy to set up and get started.
+- Two options available: GUI version and Web GUI version.
 
-### Web GUI Version (not for production)
+## ⚙️ Requirements
+To use this tool, you'll need to download your follower information from Instagram. Here’s how:
+1. Go to **"Account Center"** on Instagram.
+2. Navigate to **"Your Information"**.
+3. Select **"Download Your Information"**.
+4. Choose **"Some of Your Information"** and select **"Followers and Following"** in JSON format.
+
+## 🚀 How to Use
+
+### GUI Version (Recommended)
+- First, install the necessary library:
+  ```bash
+  pip install pyqt6
+  ```
+- Then, run the application:
+  ```bash
+  python3 gui/app.py
+  ```
+
+### Web GUI Version (For Testing Only)
 - Install Flask:
-> pip install flask
-- Enter the web folder and run:
-> cd web && flask run
-
-## Roadmap
-- Make a production ready web app
-- Improve its efficiency and safety
-- Make a more detailed guide
+  ```bash
+  pip install flask
+  ```
+- Navigate to the web folder and start the server:
+  ```bash
+  cd web && flask run
+  ```
