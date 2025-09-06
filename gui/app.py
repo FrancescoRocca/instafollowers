@@ -19,6 +19,26 @@ class MainWindow(QWidget):
         super().__init__()
         self.setWindowTitle("InstaFollowers")
         self.setGeometry(300, 300, 400, 200)
+        self.setStyleSheet("""
+            QWidget { background-color: #2c3e50; }
+            QPushButton { 
+                background-color: #3498db; 
+                color: white; 
+                font-size: 14px; 
+                padding: 10px; 
+                border: none; 
+                border-radius: 5px;
+            }
+            QPushButton:hover { background-color: #2980b9; }
+            QLabel { color: white; font-size: 14px; }
+            QTextEdit { 
+                background-color: #ecf0f1; 
+                color: #2c3e50; 
+                padding: 5px; 
+                border: 1px solid #bdc3c7; 
+                border-radius: 4px;
+            }
+        """)
 
         layout = QVBoxLayout(self)
         self.setLayout(layout)
@@ -48,9 +68,14 @@ class MainWindow(QWidget):
         )
         if filenames:
             self.followers_data = read_json(filenames)
-            self.label_selected_followers.setText(
-                f"Selected Followers JSON: {filenames}"
-            )
+            if self.followers_data is None:
+                self.label_selected_followers.setText(
+                    "Followers file: [Error reading file]"
+                )
+            else:
+                self.label_selected_followers.setText(
+                    f"Selected Followers JSON: {filenames}"
+                )
 
     def choose_following_json(self):
         filenames, _ = QFileDialog.getOpenFileName(
@@ -58,14 +83,26 @@ class MainWindow(QWidget):
         )
         if filenames:
             self.following_data = read_json(filenames)
-            self.label_selected_following.setText(
-                f"Selected Following JSON: {filenames}"
-            )
+            if self.following_data is None:
+                self.label_selected_following.setText(
+                    "Following file: [Error reading file]"
+                )
+            else:
+                self.label_selected_following.setText(
+                    f"Selected Following JSON: {filenames}"
+                )
 
     def calculate_difference(self):
         if self.followers_data and self.following_data:
-            diff = difference(self.followers_data, self.following_data)
-            self.show_difference_window(diff)
+            try:
+                diff = difference(self.followers_data, self.following_data)
+                self.show_difference_window(diff)
+            except Exception as e:
+                alert = QMessageBox()
+                alert.setWindowTitle("Error")
+                alert.setText(f"Error calculating difference: {str(e)}")
+                alert.setIcon(QMessageBox.Icon.Critical)
+                alert.exec()
         else:
             alert = QMessageBox()
             alert.setWindowTitle("Alert")
@@ -84,7 +121,18 @@ class DifferenceWindow(QDialog):
         super().__init__()
         self.setWindowTitle(f"Difference Result ({num_names} names)")
         self.setGeometry(300, 300, 400, 400)
-
+        self.setStyleSheet("""
+            QDialog { background-color: #2c3e50; }
+            QLabel { color: white; font-size: 14px; }
+            QTextEdit { 
+                background-color: #ecf0f1; 
+                color: #2c3e50; 
+                padding: 5px; 
+                border: 1px solid #bdc3c7; 
+                border-radius: 4px;
+            }
+            QDialogButtonBox { padding: 10px; }
+        """)
         layout = QVBoxLayout(self)
 
         label = QLabel("Names in Following but not in Followers:")
@@ -101,9 +149,17 @@ class DifferenceWindow(QDialog):
 
 
 def read_json(file):
-    with open(file, "r") as f:
-        data = json.load(f)
-    return data
+    try:
+        with open(file, "r") as f:
+            data = json.load(f)
+        return data
+    except Exception as e:
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Icon.Critical)
+        msg.setWindowTitle("JSON Error")
+        msg.setText(f"Failed to read JSON file:\n{str(e)}")
+        msg.exec()
+        return None
 
 
 def extract_following(json_data):
